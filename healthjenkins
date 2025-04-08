@@ -51,6 +51,8 @@ pipeline {
     }
     stage('Terraform Operations for test workspace') {
       steps {
+        withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awskey', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+         }
         script {
           sh '''
             terraform init -input=false
