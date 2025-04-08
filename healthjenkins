@@ -40,7 +40,7 @@ pipeline {
     stage('Docker Push-Image') {
       steps {
         echo 'This stage will push my new image to the dockerhub'
-        sh 'docker push admin9978/health-care:1.0'
+        sh 'docker push admin9978/health-care:latest'
             }
       }
      stage('AWS-Login') {
