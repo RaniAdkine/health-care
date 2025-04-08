@@ -1,5 +1,9 @@
 pipeline {
   agent any
+environment {
+    AWS_REGION = 'us-east-1'
+  }
+
      tools {
        maven 'M2_HOME'
            }
@@ -55,7 +59,6 @@ pipeline {
          }
         script {
           sh '''
-            terraform init -input=false
             terraform workspace select test || terraform workspace new test
             terraform init
             terraform plan
