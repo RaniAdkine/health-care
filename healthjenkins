@@ -26,7 +26,7 @@ pipeline {
      stage('Create Docker Image') {
       steps {
         echo 'This stage will Create a Docker image'
-        sh 'docker build -t admin9978/health-care:1.0 .'
+        sh 'docker build -t admin9978/health-care:latest .'
                           }
             }
      stage('Login to Dockerhub') {
