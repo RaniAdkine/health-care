@@ -43,7 +43,7 @@ pipeline {
         sh 'docker push admin9978/health-care:1.0'
             }
       }
-    stage('AWS-Login') {
+     stage('AWS-Login') {
       steps {
        withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awskey', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
          }
@@ -51,24 +51,14 @@ pipeline {
     }
     stage('Terraform Operations for test workspace') {
       steps {
-        withCredentials([[
-  $class: 'AmazonWebServicesCredentialsBinding',
-  credentialsId: 'awskey',
-  accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-  secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-]]) 
-script {
-  sh '''
-    terraform init -input=false
-
-    terraform workspace select test || terraform workspace new test
-
-    terraform plan \
-      -var "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
-      -var "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"
-  '''
-}
-
+        script {
+          sh '''
+            terraform workspace select test || terraform workspace new test
+            terraform init
+            terraform plan
+            terraform destroy -auto-approve
+          '''
+        }
       }
     }
     stage('Terraform destroy & apply for test workspace') {
