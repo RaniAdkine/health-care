@@ -51,14 +51,23 @@ pipeline {
     }
     stage('Terraform Operations for test workspace') {
       steps {
-        script {
-          sh '''
-            terraform workspace select test || terraform workspace new test
-            terraform init
-            terraform plan
-            terraform destroy -auto-approve
-          '''
-        }
+        withCredentials([[
+  $class: 'AmazonWebServicesCredentialsBinding',
+  credentialsId: 'Awsaccess',
+  accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+  secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+]]) {
+  sh '''
+    terraform init -input=false
+
+    terraform workspace select test || terraform workspace new test
+
+    terraform plan \
+      -var "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
+      -var "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"
+  '''
+}
+
       }
     }
     stage('Terraform destroy & apply for test workspace') {
