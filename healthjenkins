@@ -85,14 +85,14 @@ pipeline {
         }
       }
       steps {
-        script {
+        
           sh '''
             terraform workspace select prod || terraform workspace new prod
             terraform init
             terraform plan
             terraform destroy -auto-approve
           '''
-        }
+        
       }
     }
     stage('Terraform destroy & apply for production workspace') {
